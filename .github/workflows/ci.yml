@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  TF_VERSION: "1.9.8"
+
+jobs:
+  terraform:
+    name: Terraform fmt / validate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        working-directory: [".", "examples/complete"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: terraform fmt
+        working-directory: ${{ matrix.working-directory }}
+        run: terraform fmt -recursive -check -diff
+
+      - name: terraform init
+        working-directory: ${{ matrix.working-directory }}
+        run: terraform init -backend=false -input=false
+
+      - name: terraform validate
+        working-directory: ${{ matrix.working-directory }}
+        run: terraform validate
+
+  terraform-docs:
+    name: terraform-docs (README stays in sync)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: terraform-docs/gh-actions@v1
+        with:
+          working-dir: .
+          config-file: .terraform-docs.yml
+          output-file: README.md
+          output-method: inject
+          git-push: false
+          fail-on-diff: true
+
+  lambda:
+    name: Lambda (compile + unit tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install -r tests/requirements.txt
+
+      - name: Byte-compile handlers
+        run: python3 -m py_compile lambda/receiver.py lambda/processor.py
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -v

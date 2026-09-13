@@ -1,0 +1,32 @@
+# Copy this file to terraform.tfvars and fill in real values.
+# terraform.tfvars is git-ignored — never commit real secrets.
+
+aws_region = "us-east-1"
+name       = "my-whatsapp-assistant"
+
+# Optional. Named profile from ~/.aws/credentials to deploy with. Leave unset
+# (or delete this line) to fall back to the standard AWS credential chain
+# (AWS_PROFILE env var, then the "default" profile). Worth pinning explicitly
+# if your machine has more than one AWS account configured.
+# aws_profile = "my-personal-account"
+
+# Meta Developer Portal > WhatsApp > API Setup > Temporary/Permanent access token
+# (see the README for how to generate a permanent one via a System User).
+whatsapp_token = "REPLACE_WITH_YOUR_PERMANENT_TOKEN"
+
+# Any secret string you choose. Enter the exact same value in the Meta
+# Developer Portal's webhook "Verify token" field.
+whatsapp_verify_token = "REPLACE_WITH_A_RANDOM_SECRET_STRING"
+
+# Meta Developer Portal > WhatsApp > API Setup > Phone number ID
+whatsapp_phone_number_id = "REPLACE_WITH_YOUR_PHONE_NUMBER_ID"
+
+# Meta Developer Portal > App settings > Basic > App secret (click "Show").
+# Used to verify the X-Hub-Signature-256 header Meta signs every webhook
+# POST with, so forged requests to your webhook URL are rejected.
+whatsapp_app_secret = "REPLACE_WITH_YOUR_APP_SECRET"
+
+# Your own WhatsApp number(s) in E.164 format, WITHOUT the leading '+'.
+allowed_phone_numbers = ["15551234567"]
+
+bedrock_model_id = "us.anthropic.claude-haiku-4-5-20251001-v1:0"

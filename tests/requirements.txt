@@ -1,0 +1,6 @@
+# Test-only dependency. The deployed Lambda packages (lambda/*.py) have zero
+# third-party dependencies by design (see AGENTS.md) — boto3 ships built
+# into the Lambda runtime itself, so it's never bundled into either zip.
+# It's needed here purely so unittest.mock.patch("boto3.client") has a real
+# module to resolve against when running these tests outside that runtime.
+boto3>=1.34

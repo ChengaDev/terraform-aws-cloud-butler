@@ -1,0 +1,30 @@
+# Terraform
+.terraform/
+# Reusable modules aren't applied directly, so the module root's own lock
+# file isn't meaningful to commit — but examples/*/.terraform.lock.hcl (a
+# real, directly-applied configuration) intentionally IS tracked, per
+# HashiCorp's own recommendation to commit the lock file for configurations
+# you run `terraform init`/`apply` in directly.
+/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.auto.tfvars
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Lambda build artifacts produced by `data "archive_file"`
+.build/
+*.zip
+
+# OS / editor cruft
+.DS_Store
+*.swp
+.idea/
+.vscode/
+__pycache__/
+*.pyc
